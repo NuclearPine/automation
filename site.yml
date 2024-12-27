@@ -1,0 +1,7 @@
+---
+# Playbook for applying declarative configurations
+
+- hosts: armserver1
+  become: true
+  roles:
+    - webserver-blog

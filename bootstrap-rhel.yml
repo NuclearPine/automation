@@ -1,0 +1,68 @@
+---
+# This playbook is only designed to be run against newly installed hosts only.
+# When running this playbook, use the following syntax:
+# ansible-playbook -i <ip address>, -l <ip address> -u <valid_ssh_user> bootstrap-rhel.yml
+
+- name: Bootstrap fresh Linux RHEL/Alma/Rocky installation
+  hosts: "{{ ansible_limit }}"
+  become: true
+  vars_prompt:
+    - name: hostname
+      prompt: Enter a desired hostname
+      private: false
+    
+  vars_files:
+    - vars/secrets.yml
+
+  tasks:
+    - name: Add 'ansible' user with UID 2000
+      user:
+        name: ansible
+        uid: 2000
+        state: present
+        createhome: true
+        shell: /bin/bash
+
+    - name: Add SSH keys to 'ansible' user's authorized_keys file
+      ansible.posix.authorized_key:
+        user: ansible
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH0x+XS9+4psMxWpASboko+cyZITLYFKIO1jO4ACPk2m jakks_key"
+        state: present
+
+    - name: Add ansible user to sudoers
+      copy:
+        src: sudoer_ansible
+        dest: /etc/sudoers.d/ansible
+        owner: root
+        group: root
+        mode: 0440
+
+    - name: configure the system hostname
+      hostname:
+        name: "{{ hostname }}"
+    
+    - name: Add the NetBird repository
+      copy:
+        src: dnf-repos/netbird.repo
+        dest: /etc/yum.repos.d/netbird.repo
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Update all packages
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: true
+      
+    - name: Install NetBird
+      dnf:
+        name: netbird
+        state: latest
+
+    - name: start netbird
+      command: "/usr/bin/netbird up --setup-key {{ netbird_key }}"
+
+
+    
+      
