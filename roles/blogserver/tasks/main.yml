@@ -1,0 +1,9 @@
+---
+- name: copy blog config file  
+  copy:
+    src: nginx-confs/blog.conf
+    dest: /etc/nginx/conf.d/blog.conf
+    owner: root
+    mode: 0644
+  notify: restart nginx
+

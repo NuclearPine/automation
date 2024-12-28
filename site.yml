@@ -4,4 +4,4 @@
 - hosts: armserver1
   become: true
   roles:
-    - webserver-blog
+    - blogserver
