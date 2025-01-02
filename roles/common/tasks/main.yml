@@ -1,0 +1,13 @@
+---
+- name: Add 'jakks' user
+  user:
+    name: jakks
+    state: present
+    createhome: true
+    shell: /bin/bash
+
+- name: Add authorized SSH key for jakks
+  ansible.posix.authorized_key:
+    user: jakks
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH0x+XS9+4psMxWpASboko+cyZITLYFKIO1jO4ACPk2m jakks_key"
+    state: present

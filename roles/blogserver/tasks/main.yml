@@ -1,5 +1,5 @@
 ---
-- name: copy blog config file  
+- name: copy blog config file
   copy:
     src: nginx-confs/blog.conf
     dest: /etc/nginx/conf.d/blog.conf
@@ -7,3 +7,9 @@
     mode: 0644
   notify: restart nginx
 
+- name: pull down static site from Github
+  ansible.builtin.git:
+    repo: https://github.com/NuclearPine/blog-static
+    dest: /var/www/pyrah.us
+  tags: "update-blog"
+  become: true

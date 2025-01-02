@@ -1,0 +1,6 @@
+---
+package_list:
+  - vim-enhanced
+  - tmux
+  - git
+  - epel-release

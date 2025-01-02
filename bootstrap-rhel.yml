@@ -3,16 +3,25 @@
 # When running this playbook, use the following syntax:
 # ansible-playbook -i <ip address>, -l <ip address> -u <valid_ssh_user> bootstrap-rhel.yml
 
-- name: Bootstrap fresh Linux RHEL/Alma/Rocky installation
-  hosts: "{{ ansible_limit }}"
+- name: Bootstrap fresh RHEL/Alma/Rocky installation
+
+  hosts: all
+  order: sorted
   become: true
+  gather_facts: false
+
   vars_prompt:
-    - name: hostname
-      prompt: Enter a desired hostname
+    - name: ts_key
+      prompt: Enter tailscale setup key
       private: false
-    
-  vars_files:
-    - vars/secrets.yml
+
+  pre_tasks:
+    - name: Fail when run against the main inventory
+      when: inventory_hostname == '_failwhenfound'
+      any_errors_fatal: yes
+      fail:
+        msg: >
+          Error! You must specify a specific IP/hostname or custom inventory when running this playbook with the -i flag.
 
   tasks:
     - name: Add 'ansible' user with UID 2000
@@ -37,16 +46,11 @@
         group: root
         mode: 0440
 
-    - name: configure the system hostname
-      hostname:
-        name: "{{ hostname }}"
-    
-    - name: Add the NetBird repository
+    - name: install tailscale repository
       copy:
-        src: dnf-repos/netbird.repo
-        dest: /etc/yum.repos.d/netbird.repo
+        src: dnf-repos/tailscale.repo
+        dest: /etc/yum.repos.d/tailscale.repo
         owner: root
-        group: root
         mode: 0644
 
     - name: Update all packages
@@ -54,15 +58,18 @@
         name: "*"
         state: latest
         update_cache: true
-      
-    - name: Install NetBird
+        allowerasing: true
+
+    - name: Install tailscale
       dnf:
-        name: netbird
-        state: latest
+        name: tailscale
+        state: present
 
-    - name: start netbird
-      command: "/usr/bin/netbird up --setup-key {{ netbird_key }}"
+    - name: start tailscaled
+      service:
+        name: tailscaled
+        state: started
+        enabled: true
 
-
-    
-      
+    - name: tailscale up
+      command: /usr/bin/tailscale up --auth-key={{ ts_key }} --accept-routes
