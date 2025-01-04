@@ -1,0 +1,45 @@
+---
+- name: Add ansible service user
+  user:
+    name: ansible
+    uid: 2000
+    state: present
+    createhome: true
+    shell: /sbin/nologin
+
+- name: Add user jakks
+  user:
+    name: jakks
+    state: present
+    createhome: true
+    shell: /bin/bash
+
+- name: Add sudoers
+  copy:
+    src: files/sudoers/
+    dest: /etc/sudoers.d/
+    owner: root
+    group: root
+    mode: 0440
+    validate: /usr/sbin/visudo -csf %s
+
+- name: Add authorized_keys for jakks
+  template:
+    src: authorized_keys.j2
+    dest: /home/jakks/.ssh/authorized_keys
+  vars:
+    authorized_keys: "{{ authorized_keys_jakks }}"
+
+- name: Add authorized_keys for ansible
+  template:
+    src: authorized_keys.j2
+    dest: /home/ansible/.ssh/authorized_keys
+  vars:
+    authorized_keys: "{{ authorized_keys_ansible }}"
+
+- name: test-vars
+  debug:
+    msg: "{{ authkeys_combined.jakks }}"
+  tags:
+    - debug
+

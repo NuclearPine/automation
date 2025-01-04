@@ -4,3 +4,13 @@ package_list:
   - tmux
   - git
   - epel-release
+
+
+authorized_keys_jakks:
+  - "{{ pubkey_jakkspc }}"
+  - "{{ pubkey_thinkpad }}"
+
+authorized_keys_ansible:
+  - "{{ pubkey_jakkspc }}"
+  - "{{ pubkey_thinkpad }}"
+
