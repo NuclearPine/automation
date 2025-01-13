@@ -1,11 +1,15 @@
 ---
 ansible_user: ansible
 
-base_package_list:
+package_list:
   - vim-enhanced
   - tmux
   - git
   - podman
+  - chrony
+
+service_list:
+  - chronyd
 
 authorized_keys_jakks:
   - "{{ pubkey_jakkspc }}"

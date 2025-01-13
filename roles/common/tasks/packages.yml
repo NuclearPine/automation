@@ -5,9 +5,16 @@
     state: present
   when: ansible_facts['os_family'] == "RedHat"
 
-- name: Install base packages (dnf)
+- name: Install extra packages (dnf)
   dnf:
-    name: "{{ base_package_list | default('') }}"
+    name: "{{ package_list | default('') }}"
     state: present
   when: ansible_facts['os_family'] == "RedHat"
+
+- name: Enable services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop: "{{ service_list | default(['']) }}"
 

@@ -9,6 +9,7 @@
         upgrade: yes
         update_cache: true
       when: ansible_os_family == "Debian"
+      tags: [always]
 
     - name: Upgrade all packages - dnf
       dnf:
@@ -16,3 +17,10 @@
         state: latest
         update_cache: true
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+      tags: [always]
+
+    - name: Reboot system
+      reboot:
+        msg: "Rebooting machine"
+      tags: [reboot]
+      

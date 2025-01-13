@@ -1,8 +1,12 @@
 ---
 # Playbook for applying declarative configurations
 
-- hosts: armserver1
+- hosts: rhel_servers
   become: true
   roles:
     - common
+
+- hosts: armserver1
+  become: true
+  roles:
     - blogserver
