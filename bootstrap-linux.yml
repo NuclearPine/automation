@@ -1,0 +1,49 @@
+---
+# This playbook is only designed to be run against newly installed hosts only.
+# When running this playbook, use the following syntax:
+# Packages on target should be updated prior to using
+# ansible-playbook -i <ip address> -u <valid_ssh_user> bootstrap-linux.yml
+# currently only supports RHEL/RHEL derivatives
+
+- name: Bootstrap fresh Linux installation
+
+  hosts: all
+  order: sorted
+  become: true
+  gather_facts: true
+
+
+  vars_prompt:
+    - name: ts_key
+      prompt: Enter tailscale setup key
+      private: false
+
+  vars:
+    tailscale_up_cmd: "tailscale up --accept-routes --auth-key={{ ts_key }}"
+    authorized_keys_jakks:
+      - "{{ pubkey_jakkspc }}"
+      - "{{ pubkey_thinkpad }}"
+    authorized_keys_ansible:
+      - "{{ pubkey_jakkspc }}"
+      - "{{ pubkey_thinkpad }}"
+
+  pre_tasks:
+    - name: Fail when run against the main inventory
+      when: inventory_hostname == '_failwhenfound'
+      any_errors_fatal: yes
+      fail:
+        msg: >
+          Error! You must specify a specific IP/hostname or custom inventory when running this playbook with the -i flag.
+
+
+  tasks:
+
+    - name: update all packages (dnf)
+      dnf:
+        name: "*"
+        state: latest
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: include common role
+      include_role:
+        name: common

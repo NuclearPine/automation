@@ -1,0 +1,21 @@
+---
+- name: Install tailscale dnf repo
+  copy:
+    src: dnf-repos/tailscale-rhel9.repo
+    dest: /etc/yum.repos.d/tailscale.repo
+    mode: 0644
+
+- name: Install tailscale
+  dnf:
+    name: tailscale
+    state: present
+
+- name: Enable tailscaled
+  service:
+    name: tailscaled
+    state: started
+    enabled: true
+
+- name: start tailscale
+  command:
+    cmd: "{{ tailscale_up_cmd | default('tailscale up --accept-routes') }}"

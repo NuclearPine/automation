@@ -5,3 +5,6 @@
 
 - name: Package management
   import_tasks: packages.yml
+
+- name: Tailscale setup
+  import_tasks: tailscale.yml

@@ -1,10 +1,11 @@
 ---
-package_list:
+ansible_user: ansible
+
+base_package_list:
   - vim-enhanced
   - tmux
   - git
-  - epel-release
-
+  - podman
 
 authorized_keys_jakks:
   - "{{ pubkey_jakkspc }}"
@@ -13,4 +14,3 @@ authorized_keys_jakks:
 authorized_keys_ansible:
   - "{{ pubkey_jakkspc }}"
   - "{{ pubkey_thinkpad }}"
-
