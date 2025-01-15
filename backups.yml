@@ -1,0 +1,22 @@
+---
+
+- hosts: all
+  become: true
+
+  vars_files: 
+    - vars/secrets.yml
+
+  tasks:
+
+    - name: Backup to restic repository
+      environment:
+        RESTIC_REPOSITORY: "{{ restic_repo }}"
+        RESTIC_PASSWORD: "{{ restic_repo_pass }}"
+        AWS_ACCESS_KEY_ID: "{{ oci_backup_access_key }}"
+        AWS_SECRET_ACCESS_KEY: "{{ oci_backup_secret_key }}"
+
+      command: /usr/local/bin/restic backup {{ item }}
+
+      loop: "{{ restic_backup_dirs_daily }}"
+      tags: [daily]
+
