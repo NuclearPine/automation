@@ -1,13 +1,11 @@
 ---
-
 - hosts: all
   become: true
 
-  vars_files: 
-    - vars/secrets.yml
+  vars_files:
+    - vars/vault.yml
 
   tasks:
-
     - name: Backup to restic repository
       environment:
         RESTIC_REPOSITORY: "{{ restic_repo }}"
@@ -19,4 +17,3 @@
 
       loop: "{{ restic_backup_dirs_daily }}"
       tags: [daily]
-
