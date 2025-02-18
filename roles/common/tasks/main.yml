@@ -1,10 +1,6 @@
 ---
-
-- name: User management
-  import_tasks: users.yml
-
 - name: Package management
   import_tasks: packages.yml
 
-- name: Tailscale setup
-  import_tasks: tailscale.yml
+- name: User management
+  import_tasks: users.yml

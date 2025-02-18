@@ -11,10 +11,15 @@
     state: present
   when: ansible_facts['os_family'] == "RedHat"
 
+- name: install extra packages (apt)
+  apt:
+    name: "{{ package_list | default('') }}"
+    state: present
+  when: ansible_facts['os_family'] == "Debian"
+
 - name: Enable services
   service:
     name: "{{ item }}"
     state: started
     enabled: true
   loop: "{{ service_list | default(['']) }}"
-

@@ -1,0 +1,21 @@
+---
+ansible_user: ansible
+
+package_list:
+  - sudo
+  - vim
+  - tmux
+  - git
+  - podman
+  - chrony
+
+service_list:
+  - chronyd
+
+authorized_keys_jakks:
+  - "{{ pubkey_jakkspc }}"
+  - "{{ pubkey_thinkpad }}"
+
+authorized_keys_ansible:
+  - "{{ pubkey_jakkspc }}"
+  - "{{ pubkey_thinkpad }}"

@@ -1,10 +1,10 @@
 ---
 # Playbook for applying declarative configurations
-
 - hosts: rhel_servers
   become: true
   roles:
     - common
+    - artis3n.tailscale
 
 - hosts: armserver1
   become: true

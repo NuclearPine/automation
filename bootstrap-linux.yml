@@ -12,20 +12,16 @@
   become: true
   gather_facts: true
 
-
-  vars_prompt:
-    - name: ts_key
-      prompt: Enter tailscale setup key
-      private: false
-
   vars:
-    tailscale_up_cmd: "tailscale up --accept-routes --auth-key={{ ts_key }}"
     authorized_keys_jakks:
       - "{{ pubkey_jakkspc }}"
       - "{{ pubkey_thinkpad }}"
     authorized_keys_ansible:
       - "{{ pubkey_jakkspc }}"
       - "{{ pubkey_thinkpad }}"
+
+  vars_files:
+    - vault.yml
 
   pre_tasks:
     - name: Fail when run against the main inventory
@@ -35,15 +31,26 @@
         msg: >
           Error! You must specify a specific IP/hostname or custom inventory when running this playbook with the -i flag.
 
-
   tasks:
-
     - name: update all packages (dnf)
       dnf:
         name: "*"
         state: latest
       when: ansible_facts['os_family'] == "RedHat"
 
+    - name: update all packages (apt)
+      apt:
+        update_cache: true
+        state: latest
+        upgrade: yes
+      when: ansible_facts['os_family'] == "Debian"
+
     - name: include common role
       include_role:
         name: common
+      vars:
+        package_list: ["sudo"]
+
+    - name: include tailscale role
+      include_role:
+        name: artis3n.tailscale
