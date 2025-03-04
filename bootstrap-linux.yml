@@ -3,7 +3,7 @@
 # When running this playbook, use the following syntax:
 # Packages on target should be updated prior to using
 # ansible-playbook -i <ip address> -u <valid_ssh_user> bootstrap-linux.yml
-# currently only supports RHEL/RHEL derivatives
+# currently only supports RHEL and Debian based systems
 
 - name: Bootstrap fresh Linux installation
 

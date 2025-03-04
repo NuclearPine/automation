@@ -1,7 +1,13 @@
 ---
 # Playbook for applying declarative configurations
-- hosts: rhel_servers
+
+
+- hosts: 
+  - rhel_servers
+  - deb_servers
   become: true
+  vars_files:
+    - vault.yml
   roles:
     - common
     - artis3n.tailscale
