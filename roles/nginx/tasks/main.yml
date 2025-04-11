@@ -12,15 +12,15 @@
     immediate: true
     offline: true
 
-- name: create extra directory to store SSL configs
+- name: create extra directory to store TLS configs
   file:
-    path: /etc/nginx/ssl.conf.d
+    path: /etc/nginx/tls.conf.d
     state: directory
     mode: 0755
 
 - name: copy main nginx config file
   copy:
-    src: nginx-confs/nginx.conf
+    src: nginx_confs/nginx.conf
     dest: /etc/nginx/nginx.conf
     owner: root
     mode: 0644
@@ -28,14 +28,8 @@
 
 - name: copy nginx config file for SSL
   copy:
-    src: nginx-confs/ssl-pyrah.us.conf
-    dest: /etc/nginx/ssl.conf.d/ssl-pyrah.us.conf
+    src: nginx_confs/tls_pyrah.us.conf
+    dest: /etc/nginx/tls.conf.d/tls_pyrah.us.conf
     owner: root
     mode: 0644
   notify: restart nginx
-
-- name: Ensure nginx service is enabled
-  service:
-    name: nginx
-    state: started
-    enabled: true

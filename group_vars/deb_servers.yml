@@ -8,6 +8,8 @@ package_list:
   - git
   - podman
   - chrony
+  - curl
+  - software-properties-common
 
 service_list:
   - chronyd

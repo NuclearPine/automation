@@ -1,7 +1,7 @@
 ---
 - name: copy blog config file
   copy:
-    src: nginx-confs/blog.conf
+    src: nginx_confs/blog.conf
     dest: /etc/nginx/conf.d/blog.conf
     owner: root
     mode: 0644
@@ -11,5 +11,5 @@
   ansible.builtin.git:
     repo: https://github.com/NuclearPine/blog-static
     dest: /var/www/pyrah.us
-  tags: "update-blog"
+  tags: ["update-blog", "never"]
   become: true
